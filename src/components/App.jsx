@@ -63,6 +63,26 @@ function App() {
         .catch(error => console.log(error.message))
     }
 
+  function handleLikeToy(toy) {
+    const URL_UPDATE = API_URL + "/" + toy.id;
+
+    fetch(URL_UPDATE, {
+            method: "PATCH",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ likes: toy.likes + 1 })
+    })
+      .then(r => {
+        if (!r.ok) {throw new Error("failed to update like count") }
+          return r.json()
+        })
+      .then(data => updateToys(data))
+      .catch(error => console.log(error.message))
+  }
+
+  function updateToys(updatedToy) {
+    setToys(previousToys => previousToys.map(toy => toy.id === updatedToy.id ? updatedToy : toy));
+  }
+
   return (
     <>
       <Header />
@@ -70,7 +90,7 @@ function App() {
       <div className="buttonContainer">
         <button onClick={handleClick}>Add a Toy</button>
       </div>
-      <ToyContainer toys={toys} onDonateToy={handleDonateToy} />
+      <ToyContainer toys={toys} onDonateToy={handleDonateToy} onLikeToy={handleLikeToy}/>
     </>
   );
 }
