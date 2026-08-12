@@ -50,6 +50,19 @@ function App() {
       .catch((err) => setError(err.message));
   }
 
+  function handleDonateToy(toyIdToDelete) {
+
+    const URL_DELETE = API_URL + "/" + toyIdToDelete;
+    fetch(URL_DELETE, {
+            method: "DELETE"
+      })
+        .then(r => {
+            if (!r.ok) {throw new Error("failed to delete toy") }
+            setToys(previousToys => previousToys.filter(toy => toy.id != toyIdToDelete));
+          })
+        .catch(error => console.log(error.message))
+    }
+
   return (
     <>
       <Header />
@@ -57,29 +70,9 @@ function App() {
       <div className="buttonContainer">
         <button onClick={handleClick}>Add a Toy</button>
       </div>
-      <ToyContainer toys={toys} />
+      <ToyContainer toys={toys} onDonateToy={handleDonateToy} />
     </>
   );
 }
 
 export default App;
-
-/*
-function handleAddNewPlant(newPlant) {
-    fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPlant),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to add plant");
-        return res.json();
-      })
-      .then((savedPlant) => {
-        setPlants((prevPlants) => [...prevPlants, savedPlant]);
-      })
-      .catch((err) => setError(err.message));
-  }
-      */
