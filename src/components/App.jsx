@@ -32,10 +32,28 @@ function App() {
     .catch((err) => console.log("Unable to get plants: " + err.message));
   }
 
+  function handleAddNewToy(newToy) {
+    fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newToy),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to add toy");
+        return res.json();
+      })
+      .then((savedToy) => {
+        setToys((prevToys) => [...prevToys, savedToy]);
+      })
+      .catch((err) => setError(err.message));
+  }
+
   return (
     <>
       <Header />
-      {showForm ? <ToyForm /> : null}
+      {showForm ? <ToyForm onAddNewToy={handleAddNewToy} /> : null}
       <div className="buttonContainer">
         <button onClick={handleClick}>Add a Toy</button>
       </div>
@@ -45,3 +63,23 @@ function App() {
 }
 
 export default App;
+
+/*
+function handleAddNewPlant(newPlant) {
+    fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newPlant),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to add plant");
+        return res.json();
+      })
+      .then((savedPlant) => {
+        setPlants((prevPlants) => [...prevPlants, savedPlant]);
+      })
+      .catch((err) => setError(err.message));
+  }
+      */
